@@ -1,9 +1,9 @@
 
 
 # Integration flow
-There are few requirements for the exchanges to be able to be a part of Warp Network. <br/>
-The processing itself done transparently for the exchange through GEO Node, 
-but there are several integrations that should be done, for proper communication between GEO Node, 
+There are few requirements for the exchanges to be able to be a part of [Warp Network](https://github.com/warp-network). <br/>
+The processing itself done transparently for the exchange through [GEO Node](https://github.com/GEO-Protocol/GEO-network-client), 
+but there are several integrations that should be done, for proper communication between [GEO Node](https://github.com/GEO-Protocol/GEO-network-client), 
 and exchange back-end. 
 
 <br/>
@@ -11,11 +11,11 @@ and exchange back-end.
 
 ## Assets addresses discovering flow
 In case if some user wants to withdraw his balance 
-and transfer it to another exchange through Warp Network — 
+and transfer it to another exchange through [Warp Network](https://github.com/warp-network) — 
 two actions should be performed by the exchange, that initialises the operation:
 
-1. Lookup for entered BTC/ETH/etc address in the Warp Network.
-1. In case if there is an exchange that approved address presence — send assets.  
+1. Lookup for entered `btc` / `eth`  address in the [Warp Network](https://github.com/warp-network).
+1. In case if there is an exchange, that has been approved address ownership — send assets to it.  
 
 Here is the flow for address resolving:
 <br/>
@@ -39,7 +39,7 @@ _Figure 3: Router of the Hub resolves the address received._ <br/>
 <br/>
 <br/>
 
-_Figure 4: Router of the Hub reports final GEO Node address that is capable to accept the payment._ <br/>
+_Figure 4: Router of the Hub reports final [GEO Node](https://github.com/GEO-Protocol/GEO-network-client) address that is capable to accept the payment._ <br/>
 ![image](https://github.com/warp-network/Documentation/blob/master/content/integration/img/4.png?raw=true)
 
 <br/>
@@ -52,30 +52,32 @@ _Figure 4: Router of the Hub reports final GEO Node address that is capable to a
 `curl -X GET "https://router.warp.geoprotocol.io/api/v1/addresses/ability/?address=<some address>&ticker=btc"`
 
 * `ticker` could be one of `btc`, `eth`.
-* `address` BTC/ETH address. 
+* `address` btc/eth address. 
 
 ```json
 {
    "acceptable": true,
    "market_place": {
-       "name": "<exchange title>",
-       "interface": "<GEO Node IP Address and Port>"
+       "name": "<human readable exchange title>",
+       "interface": "<GEO Node IPv4 address AND port>"
    }
 }
 ```
 
 **Response scheme/example**
 
+Some exchange has approved address ownership.
 ```json
 {
     "acceptable": true,
     "market_place": {
-        "name": "kuna",
+        "name": "Super Exchange",
         "interface": "157.230.100.213:2000"
    }
 }
 ```
 
+No one exchange has approved the address entered.
 ```json
 {
     "acceptable": false,
@@ -122,7 +124,7 @@ Requested address doesn't belong to the current exchange.
 ## Assets sending/receiving flow
 This set of API methods is expected to be used by the back-end of the exchange. <br/>
 In case if router returned positive response — assets sending transaction should be issued 
-via Warp Network.
+via [Warp Network](https://github.com/warp-network).
 
 ### Assets sending
 Assets sending should be done in 2 stages:
@@ -145,7 +147,7 @@ Transaction payload should be set via corresponding parameter `payload` in JSON 
 ```
 
 **[Optional] Node API Key and IP Address pinning**
-It is expected, that GEO Node is located in trusted environment that is accessible by the back-end of the exchange. 
+It is expected, that [GEO Node](https://github.com/GEO-Protocol/GEO-network-client) is located in trusted environment that is accessible by the back-end of the exchange. 
 For the cases when additional security level is needed — there is an ability to specify API-key
 for the [node CLI](https://github.com/GEO-Protocol/Documentation/tree/master/client/), and to pin host IP address 
 (requests would be processed only in case if corresponding HTTP header would contain expected IP address).
