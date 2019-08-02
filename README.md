@@ -7,5 +7,5 @@ enabling fast transactions of any asset (both crypto and fiat).
 
 
 # Index
-1. [High-level overview;]()
-1. [Integration flow;]() 
+1. High-level overview (WiP); 
+1. [Integration flow](https://github.com/warp-network/Documentation/tree/master/content/integration) 
