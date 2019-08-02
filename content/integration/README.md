@@ -39,6 +39,10 @@ _Figure 3: Router of the Hub resolves the address received._ <br/>
 _Figure 4: Router of the Hub reports final GEO Node address that is capable to accept the payment._ <br/>
 ![image](https://github.com/warp-network/Documentation/blob/master/content/integration/img/4.png?raw=true)
 
+<br/>
+<br/>
+
+<hr>
 
 ### Router API Description
 #### Request
@@ -77,6 +81,11 @@ Response Example:
     }
 }
 ```
+
+<br/>
+<br/>
+
+<hr>
 
 ### Exchanges API Requirements
 To be able to react on router's requests, exchange should implement some simple API.
