@@ -6,6 +6,9 @@ The processing itself done transparently for the exchange through GEO Node,
 but there are several integrations that should be done, for proper communication between GEO Node, 
 and exchange back-end. 
 
+<br/>
+<br/>
+
 ## Assets addresses discovering flow
 In case if some user wants to withdraw his balance 
 and transfer it to another exchange through Warp Network — 
@@ -42,10 +45,10 @@ _Figure 4: Router of the Hub reports final GEO Node address that is capable to a
 <br/>
 <br/>
 
-<hr>
-
 ## Router API Description
-#### Request
+
+**Request** 
+
 `curl -X GET "https://router.warp.geoprotocol.io/api/v1/addresses/ability/?address=<some address>&ticker=btc"`
 
 * `ticker` could be one of `btc`, `eth`.
@@ -61,7 +64,8 @@ _Figure 4: Router of the Hub reports final GEO Node address that is capable to a
 }
 ```
 
-Response Example:
+**Response scheme/example**
+
 ```json
 {
     "acceptable": true,
@@ -85,8 +89,6 @@ Response Example:
 <br/>
 <br/>
 
-<hr>
-
 ## Exchanges API Requirements
 To be able to react on router's requests, exchange should implement some simple API.
 The main reason behind this API is to inform router (and other exchanges through it) 
@@ -96,7 +98,7 @@ about presence or absence of the requested address in ecosystem of current excha
 
 Parameters are equal to router's API.
 
-**Responses expected:**
+**Responses expected**
 
 OK, requested address belongs to the current exchange. 
 ```json
@@ -113,3 +115,56 @@ Requested address doesn't belong to the current exchange.
     "acceptable": false
 }
 ``` 
+
+<br/>
+<br/>
+
+## Assets sending/receiving flow
+This set of API methods is expected to be used by the back-end of the exchange. <br/>
+In case if router returned positive response — assets sending transaction should be issued 
+via Warp Network.
+
+### Assets sending
+Assets sending should be done in 2 stages:
+1. Max flow checking — due to the nature of state channels networks, 
+it is required to verify present payment flow between sender and receiver.
+1. Payment issuing — in case if max flow reported >= expected operation amount — 
+operation should be started. Otherwise — insufficient funds error should be reported for the user. 
+   
+**API methods of the node, that should be used in this flow:**
+* [Max Flow Prediction](https://github.com/GEO-Protocol/Documentation/tree/master/client/api-http#max-flow-predicition)
+* [Payment](https://github.com/GEO-Protocol/Documentation/blob/master/client/api-http/README.md#payments--transactions-issuing)
+
+**WARN: Payments must contains payload with asset address!**
+Transaction payload should be set via corresponding parameter `payload` in JSON format:
+```json
+{
+    "ticker": "eth",
+    "address":"0xf42a1aa4a83020470D96AC47801fF80EEdC36145"
+}
+```
+
+**[Optional] Node API Key and IP Address pinning**
+It is expected, that GEO Node is located in trusted environment that is accessible by the back-end of the exchange. 
+For the cases when additional security level is needed — there is an ability to specify API-key
+for the [node CLI](https://github.com/GEO-Protocol/Documentation/tree/master/client/), and to pin host IP address 
+(requests would be processed only in case if corresponding HTTP header would contain expected IP address).
+ To configure this parameters — please, refer to the [node CLI](https://github.com/GEO-Protocol/Documentation/tree/master/client/) configuration file.
+
+### Assets receiving
+Back-end of the exchange should check for incoming payments from time to time. <br/>
+Recommended time-out is `3-4 seconds`.
+
+In case if incoming payments occurred — it is expected that balance of corresponding address 
+would be updated by the amount of the operation. Corresponding address is available in payload of the transaction.
+
+**Example:**
+```json
+{
+    "ticker": "eth",
+    "address": "0xf42a1aa4a83020470D96AC47801fF80EEdC36145"
+}
+``` 
+
+**API methods of the node that should be used in this flow:**
+* [Payments History](https://github.com/GEO-Protocol/Documentation/tree/master/client/api-http#payments-history)
