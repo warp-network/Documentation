@@ -1,12 +1,12 @@
 
 
-## Requirements
+# Integration flow
 There are few requirements for the exchanges to be able to be a part of Warp Network. <br/>
 The processing itself done transparently for the exchange through GEO Node, 
 but there are several integrations that should be done, for proper communication between GEO Node, 
 and exchange back-end. 
 
-### Support assets addresses discovering
+## Assets addresses discovering flow
 In case if some user wants to withdraw his balance 
 and transfer it to another exchange through Warp Network — 
 two actions should be performed by the exchange, that initialises the operation:
@@ -44,7 +44,7 @@ _Figure 4: Router of the Hub reports final GEO Node address that is capable to a
 
 <hr>
 
-### Router API Description
+## Router API Description
 #### Request
 `curl -X GET "https://router.warp.geoprotocol.io/api/v1/addresses/ability/?address=<some address>&ticker=btc"`
 
@@ -87,7 +87,7 @@ Response Example:
 
 <hr>
 
-### Exchanges API Requirements
+## Exchanges API Requirements
 To be able to react on router's requests, exchange should implement some simple API.
 The main reason behind this API is to inform router (and other exchanges through it) 
 about presence or absence of the requested address in ecosystem of current exchange.
