@@ -154,19 +154,26 @@ for the [node CLI](https://github.com/GEO-Protocol/Documentation/tree/master/cli
  To configure this parameters — please, refer to the [node CLI](https://github.com/GEO-Protocol/Documentation/tree/master/client/) configuration file.
 
 ### Assets receiving
-Back-end of the exchange should check for incoming payments from time to time. <br/>
-Recommended time-out is `3-4 seconds`.
+When registering an exchange, it specifies a callback URL at which we will notify it of the incoming payment. This URL will have the following parameters:
 
-In case if incoming payments occurred — it is expected that balance of corresponding address 
-would be updated by the amount of the operation. Corresponding address is available in payload of the transaction.
+* `transaction_uuid` - transaction uuid to identify all payments;
+* `address` - wallet address of the user who is receiving the payment;
+* `ticker` - payment currency;
+* `source` - name of the exchange from which the payment was received;
+* `amount` - payment amount.
 
-**Example:**
-```json
-{
-    "ticker": "eth",
-    "address": "0xf42a1aa4a83020470D96AC47801fF80EEdC36145"
-}
-``` 
+The `contractor_address` parameter of the payment must contain the address of the exchange that it gets from the router, as well as the address type (in this case, the address type will always be 12). For example, the router gave the address of the exchange 152.46.12.200, then `contractor_address` should take the value of 12-152.46.12.200
 
-**API methods of the node that should be used in this flow:**
+The `amount` parameter is the amount that will be sent to another exchange, but because it is an integer type, it must be specified in minimum indivisible units of equivalent. For example, the minimum indivisible unit in BTC is Satoshi = 0.00000001 BTC, so amount = 1 is 1 Satoshi, respectively amount = 100000000 is 1 BTC
+
+### Balance checking
+[This method](https://github.com/GEO-Protocol/Documentation/blob/master/client/api-http/README.md#get-trust-line-by-contractor-id) with the parameter `contractor_id` = 0 is used to check the balance of a node. The current balance of the exchange is determined by the balance parameter in the response.
+
+The maximum amount in a given equivalent that an exchange can transfer to another exchange is determined by its current balance in that equivalent.
+
+**API method of the node that should be used in for retrieving history of transactions:**
 * [Payments History](https://github.com/GEO-Protocol/Documentation/tree/master/client/api-http#payments-history)
+
+**GEO Protocol uses the following equivalents:**
+* BTC - 1001
+* ETH - 1002
